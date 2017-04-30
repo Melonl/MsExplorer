@@ -1,8 +1,11 @@
 package com.melonl.msexplorer;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ public class MainActivity extends BaseActivity {
 
     private CoordinatorLayout coordinator;
     private ViewPager viewPager;
+    private TabLayout tabLayout;
     private FloatingActionButton fab;
 
 
@@ -22,13 +26,15 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initView();
 
+        checkPermission();
+        initView();
         setTitle(getResources().getString(R.string.app_name));
-        setSubText("Sub Title");
+        setSubText("Main page");
     }
 
     public void initView(){
+        tabLayout = (TabLayout)findViewById(R.id.main_tablayout);
         coordinator = (CoordinatorLayout)findViewById(R.id.main_coordinator);
         viewPager = (ViewPager)findViewById(R.id.main_view_pagwer);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -37,7 +43,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 new MaterialDialog.Builder(MainActivity.this)
                         .title("Create new file")
-                        .items(new String[]{"New file","New folder"})
+                        .items(new String[]{"New file", "New folder"})
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
@@ -53,6 +59,58 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    public void initData(){
+
+
+
+    }
+
+    public void checkPermission(){
+        if (checkUpPermission() == 0)
+        {
+            initData();
+        }
+        else
+        {
+            requestStoragePermission();
+        }
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_PERMISSION_STORAGE_CODE)
+        {
+            int grantResult = grantResults[0];
+
+            boolean granted = grantResult == PackageManager.PERMISSION_GRANTED;
+
+            if (granted)
+            {
+                initData();
+            }
+            else
+            {
+                finish();
+            }
+
+        }
+
+
+    }
+
+    public void Snackbar(String text)
+    {
+        Snackbar sb = Snackbar.make(coordinator, text, Snackbar.LENGTH_SHORT);
+        //sb.getView().setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
+        sb.setAction("OK", null);
+        sb.show();
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -65,16 +123,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

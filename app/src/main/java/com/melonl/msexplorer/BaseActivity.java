@@ -1,7 +1,12 @@
 package com.melonl.msexplorer;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,8 +16,9 @@ import android.support.v7.widget.Toolbar;
 
 public class BaseActivity extends AppCompatActivity {
 
-    Toolbar toolbar = null;
+    public static final int REQUEST_PERMISSION_STORAGE_CODE = 1;
 
+    Toolbar toolbar = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,5 +62,30 @@ public class BaseActivity extends AppCompatActivity {
     public boolean useBackBtn() {
         //pls override this method if you want to use back buttton in toolbar.
         return false;
+    }
+
+
+
+    public int checkUpPermission()
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        {
+            return 0;
+        }
+
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) || !(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED))
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
+
+    public void requestStoragePermission()
+    {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE_CODE);
     }
 }
