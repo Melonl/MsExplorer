@@ -2,6 +2,7 @@ package com.melonl.msexplorer;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * Created by root on 17-4-30.
@@ -33,7 +37,13 @@ public class BaseActivity extends AppCompatActivity {
             if(useBackBtn()){
                 getActionBar().setDisplayHomeAsUpEnabled(true);
             }
+            if (useTinted()) {
+                setStatusBarBackground();
+            }
+
         }
+
+
     }
 
     public int getLayoutId(){
@@ -63,6 +73,29 @@ public class BaseActivity extends AppCompatActivity {
         //pls override this method if you want to use back buttton in toolbar.
         return false;
     }
+
+    public boolean useTinted() {
+        return true;
+    }
+
+    private void setStatusBarBackground() {
+        // 4.4 translucent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        // 5.0 transparent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+
 
 
 

@@ -28,7 +28,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object fragment) {
-        return fragmentList.indexOf((BaseFragment)fragment);
+        return fragmentList.indexOf(fragment);
     }
 
     @Override
