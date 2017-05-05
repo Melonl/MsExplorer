@@ -12,14 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.melonl.msexplorer.fragment.BaseFragment;
 
 public class MainActivity extends BaseActivity {
 
 
-    private CoordinatorLayout coordinator;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private FloatingActionButton fab;
+    private BaseFragment mCurrentfragment;
+
+    private CoordinatorLayout mCoordinator;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private FloatingActionButton mFab;
 
 
     @Override
@@ -34,11 +37,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void initView(){
-        tabLayout = (TabLayout)findViewById(R.id.main_tablayout);
-        coordinator = (CoordinatorLayout)findViewById(R.id.main_coordinator);
-        viewPager = (ViewPager)findViewById(R.id.main_view_pagwer);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        mCoordinator = (CoordinatorLayout) findViewById(R.id.main_coordinator);
+        mViewPager = (ViewPager) findViewById(R.id.main_view_pagwer);
+        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
+        mTabLayout.setupWithViewPager(mViewPager);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(MainActivity.this)
@@ -105,7 +112,7 @@ public class MainActivity extends BaseActivity {
 
     public void Snackbar(String text)
     {
-        Snackbar sb = Snackbar.make(coordinator, text, Snackbar.LENGTH_SHORT);
+        Snackbar sb = Snackbar.make(mCoordinator, text, Snackbar.LENGTH_SHORT);
         //sb.getView().setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
         sb.setAction("OK", null);
         sb.show();
