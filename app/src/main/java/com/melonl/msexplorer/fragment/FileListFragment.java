@@ -25,21 +25,21 @@ public class FileListFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_file_list, container);
+        View view = inflater.inflate(R.layout.fragment_file_list, container, false);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.file_list_rv);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.file_list_rv);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         DefaultItemAnimator animator = new DefaultItemAnimator();
         mRecyclerView.setItemAnimator(animator);
 
-        return v;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
 

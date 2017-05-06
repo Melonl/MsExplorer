@@ -22,9 +22,9 @@ public class MainPageFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_main_page, container);
+        View view = inflater.inflate(R.layout.fragment_main_page, container, false);
 
 
-        return v;
+        return view;
     }
 }
