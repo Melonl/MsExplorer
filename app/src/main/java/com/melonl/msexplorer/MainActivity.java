@@ -4,14 +4,18 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.melonl.msexplorer.fragment.BaseFragment;
 
 public class MainActivity extends BaseActivity {
@@ -22,7 +26,11 @@ public class MainActivity extends BaseActivity {
     private CoordinatorLayout mCoordinator;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mToggle;
     private FloatingActionButton mFab;
+    private FloatingToolbar mFloatingbar;
 
 
     @Override
@@ -37,6 +45,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public void initView(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawerlayout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.abc_toolbar_collapse_description, R.string.abc_action_bar_home_description);
+        mToggle.syncState();
+        mDrawer.addDrawerListener(mToggle);
+        mNavigationView = (NavigationView) findViewById(R.id.nav);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         mViewPager = (ViewPager) findViewById(R.id.main_view_pagwer);
@@ -44,6 +58,8 @@ public class MainActivity extends BaseActivity {
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
         mTabLayout.setupWithViewPager(mViewPager);
+        mFloatingbar = (FloatingToolbar) findViewById(R.id.floatingToolbar);
+
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
