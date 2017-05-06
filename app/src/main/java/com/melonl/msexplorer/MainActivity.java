@@ -12,9 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.melonl.msexplorer.fragment.BaseFragment;
 
@@ -37,7 +35,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         checkPermission();
         initView();
         setTitle(getResources().getString(R.string.app_name));
@@ -53,14 +50,18 @@ public class MainActivity extends BaseActivity {
         mNavigationView = (NavigationView) findViewById(R.id.nav);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_coordinator);
+
         mViewPager = (ViewPager) findViewById(R.id.main_view_pagwer);
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
         mTabLayout.setupWithViewPager(mViewPager);
-        mFloatingbar = (FloatingToolbar) findViewById(R.id.floatingToolbar);
 
+        mFloatingbar = (FloatingToolbar) findViewById(R.id.floatingToolbar);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFloatingbar.attachFab(mFab);
+
+        /*
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity {
                         .show();
             }
         });
+        */
     }
 
     public void initData(){
