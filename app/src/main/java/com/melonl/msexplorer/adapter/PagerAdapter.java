@@ -21,11 +21,23 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     }
 
+    public void addFragment(BaseFragment fragment) {
+        mFragments.add(fragment);
+    }
+
+    public void removeFragment(int position) {
+        mFragments.remove(position);
+    }
+
     @Override
     public BaseFragment getItem(int position) {
         return mFragments.get(position);
     }
 
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 
     @Override
     public int getCount() {

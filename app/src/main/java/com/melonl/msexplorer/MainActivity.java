@@ -2,6 +2,7 @@ package com.melonl.msexplorer;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,7 +23,7 @@ import com.melonl.msexplorer.fragment.MainPageFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
 
     private BaseFragment mCurrentfragment;
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity {
 
     private PagerAdapter mPagerAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,24 @@ public class MainActivity extends BaseActivity {
         checkPermission();
         setTitle(getResources().getString(R.string.app_name));
         setSubText("Main page");
+    }
+
+    public void addNewPage(String title, String path) {
+        FileListFragment newFragment = new FileListFragment();
+        newFragment.setTitle(title);
+        mPagerAdapter.addFragment(newFragment);
+        TabLayout.Tab tab = mTabLayout.newTab();
+        tab.setText(title);
+        mTabLayout.addTab(tab);
+        mPagerAdapter.notifyDataSetChanged();
+    }
+
+    public void removePage(BaseFragment fragment) {
+        int position = mViewPager.getCurrentItem();
+        mViewPager.setCurrentItem(position - 1);
+        //mTabLayout.removeTabAt(position);
+        mPagerAdapter.removeFragment(position);
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     private void findViews() {
@@ -66,13 +86,13 @@ public class MainActivity extends BaseActivity {
         mToggle.syncState();
         mDrawer.addDrawerListener(mToggle);
 
-        List<BaseFragment> pages = new ArrayList<BaseFragment>();
+        List<BaseFragment> pages = new ArrayList<>();
         pages.add(new MainPageFragment().setTitle("Main"));
         pages.add(new FileListFragment().setTitle("File"));
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), pages);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setOffscreenPageLimit(4);
+        //mViewPager.setOffscreenPageLimit(4);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mTabLayout.setupWithViewPager(mViewPager);
 
@@ -115,7 +135,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -172,8 +192,26 @@ public class MainActivity extends BaseActivity {
             case R.id.action_exit:
                 finish();
                 break;
+            case R.id.action_about:
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mCurrentfragment = mPagerAdapter.getItem(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

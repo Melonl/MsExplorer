@@ -11,9 +11,10 @@ import android.view.ViewGroup;
 
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
+import com.melonl.msexplorer.model.FileUtil;
 
 /**
- * Created by root on 17-4-30.
+ * Created by Melonl on 17-4-30.
  */
 
 public class FileListFragment extends BaseFragment {
@@ -25,9 +26,8 @@ public class FileListFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_file_list, container, false);
 
-        return view;
+        return inflater.inflate(R.layout.fragment_file_list, container, false);
     }
 
     @Override
@@ -37,8 +37,9 @@ public class FileListFragment extends BaseFragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.file_list_rv);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        DefaultItemAnimator animator = new DefaultItemAnimator();
-        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(new FileListAdapter(getActivity(), FileUtil.getFileList(FileUtil.getInnerSdcardPath())));
+
 
     }
 
