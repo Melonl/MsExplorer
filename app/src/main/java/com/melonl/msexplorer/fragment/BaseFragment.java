@@ -19,8 +19,9 @@ public class BaseFragment extends Fragment {
         return title;
     }
 
-    public void setTitle(String title) {
+    public BaseFragment setTitle(String title) {
         this.title = title;
+        return this;
     }
 
 

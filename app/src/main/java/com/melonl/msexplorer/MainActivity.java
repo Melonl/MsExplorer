@@ -14,7 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
+import com.melonl.msexplorer.adapter.PagerAdapter;
 import com.melonl.msexplorer.fragment.BaseFragment;
+import com.melonl.msexplorer.fragment.FileListFragment;
+import com.melonl.msexplorer.fragment.MainPageFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -30,35 +36,46 @@ public class MainActivity extends BaseActivity {
     private FloatingActionButton mFab;
     private FloatingToolbar mFloatingbar;
 
+    private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         checkPermission();
-        initView();
         setTitle(getResources().getString(R.string.app_name));
         setSubText("Main page");
     }
 
-    public void initView(){
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private void findViews() {
+
         mDrawer = (DrawerLayout) findViewById(R.id.drawerlayout);
         mToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.abc_toolbar_collapse_description, R.string.abc_action_bar_home_description);
-        mToggle.syncState();
-        mDrawer.addDrawerListener(mToggle);
         mNavigationView = (NavigationView) findViewById(R.id.nav);
-
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_coordinator);
-
         mViewPager = (ViewPager) findViewById(R.id.main_view_pagwer);
-        mViewPager.setOffscreenPageLimit(4);
-        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
-        mTabLayout.setupWithViewPager(mViewPager);
-
         mFloatingbar = (FloatingToolbar) findViewById(R.id.floatingToolbar);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
+
+    }
+
+    private void setUpViews() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mToggle.syncState();
+        mDrawer.addDrawerListener(mToggle);
+
+        List<BaseFragment> pages = new ArrayList<BaseFragment>();
+        pages.add(new MainPageFragment().setTitle("Main"));
+        pages.add(new FileListFragment().setTitle("File"));
+
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), pages);
+        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mTabLayout.setupWithViewPager(mViewPager);
+
         mFloatingbar.attachFab(mFab);
 
         /*
@@ -84,16 +101,11 @@ public class MainActivity extends BaseActivity {
         */
     }
 
-    public void initData(){
-
-
-
-    }
-
     public void checkPermission(){
         if (checkUpPermission() == 0)
         {
-            initData();
+            findViews();
+            setUpViews();
         }
         else
         {
@@ -101,7 +113,6 @@ public class MainActivity extends BaseActivity {
         }
 
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
@@ -116,7 +127,8 @@ public class MainActivity extends BaseActivity {
 
             if (granted)
             {
-                initData();
+                findViews();
+                setUpViews();
             }
             else
             {
@@ -124,8 +136,6 @@ public class MainActivity extends BaseActivity {
             }
 
         }
-
-
     }
 
     public void Snackbar(String text)
