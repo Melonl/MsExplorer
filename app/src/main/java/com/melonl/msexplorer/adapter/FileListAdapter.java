@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.model.FileUtil;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by root on 17-5-5.
  */
 
-public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHolder> {
+public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHolder> implements View.OnClickListener, View.OnLongClickListener {
 
     private Context mContext;
     private List<File> mList;
@@ -32,7 +33,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
     @Override
     public FileListAdapter.viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(mContext).inflate(R.layout.item_file_list, null);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.item_file_list, parent, false);
+        View layout = v.findViewById(R.id.item_filelist_layout);
+        layout.setOnClickListener(this);
+        layout.setOnLongClickListener(this);
         viewHolder holder = new viewHolder(v);
         holder.tv = (TextView) v.findViewById(R.id.item_filelist_tv);
         holder.subtv = (TextView) v.findViewById(R.id.item_filelist_subtv);
@@ -58,6 +62,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         return mList.size();
     }
 
+    @Override
+    public void onClick(View v) {
+        ((MainActivity) mContext).toast("you tap!");
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return true;
+    }
+
 
     class viewHolder extends RecyclerView.ViewHolder {
 
@@ -68,7 +82,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         public viewHolder(View v) {
             super(v);
         }
-
 
     }
 }

@@ -98,7 +98,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void toast(String string) {
         Toast toast = Toast.makeText(this, string, Toast.LENGTH_SHORT);
-        toast.getView().setBackgroundColor(0x50000000);
+        //toast.getView().setBackgroundColor(0x50000000);
         toast.show();
 
     }

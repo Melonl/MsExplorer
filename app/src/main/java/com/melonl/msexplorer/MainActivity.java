@@ -158,6 +158,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
     }
 
+
     public void Snackbar(String text)
     {
         Snackbar sb = Snackbar.make(mCoordinator, text, Snackbar.LENGTH_SHORT);
@@ -165,6 +166,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         sb.setAction("OK", null);
         sb.show();
     }
+
 
     @Override
     public int getLayoutId() {
