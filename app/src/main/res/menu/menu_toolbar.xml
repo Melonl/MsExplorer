@@ -2,7 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:icon="@android:drawable/ic_delete"
-        android:title="123" />
+        android:id="@+id/toolbar_copy"
+        android:icon="@drawable/ic_content_copy_white_36dp"
+        android:title="Copy" />
+
+    <item
+        android:id="@+id/toolbar_cut"
+        android:icon="@drawable/ic_content_cut_white_36dp"
+        android:title="Cut" />
+
+    <item
+        android:id="@+id/toolbar_delete"
+        android:icon="@drawable/ic_delete_white_36dp"
+        android:title="Delete" />
+
+    <item
+        android:id="@+id/toolbar_close"
+        android:icon="@drawable/ic_close_white_36dp"
+        android:title="Close" />
 
 </menu>

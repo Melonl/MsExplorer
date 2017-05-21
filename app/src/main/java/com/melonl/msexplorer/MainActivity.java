@@ -14,7 +14,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.melonl.msexplorer.adapter.PagerAdapter;
 import com.melonl.msexplorer.fragment.BaseFragment;
@@ -99,7 +101,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         mFloatingbar.attachFab(mFab);
 
-        /*
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +121,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         .show();
             }
         });
-        */
+
     }
 
     public void checkPermission(){
