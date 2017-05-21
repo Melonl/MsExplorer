@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
 import com.melonl.msexplorer.model.FileUtil;
@@ -44,7 +43,9 @@ public class FileListFragment extends BaseFragment {
 
             @Override
             public void onItemClick(View v, int pos) {
-                ((MainActivity) getActivity()).toast(pos + "");
+                //((MainActivity) getActivity()).toast(pos + "");
+
+
             }
 
             @Override
@@ -55,6 +56,10 @@ public class FileListFragment extends BaseFragment {
         });
         mRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
     }
 
 

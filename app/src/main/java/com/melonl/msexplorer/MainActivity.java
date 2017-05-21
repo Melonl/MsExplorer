@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -210,10 +211,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     @Override
     public void onPageSelected(int position) {
         mCurrentfragment = mPagerAdapter.getItem(position);
+        if (mCurrentfragment instanceof FileListFragment) {
+            RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
+            mFloatingbar.attachRecyclerView(rv);
+        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
+        mFloatingbar.detachRecyclerView();
     }
 }
