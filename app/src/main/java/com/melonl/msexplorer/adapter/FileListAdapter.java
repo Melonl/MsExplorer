@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.melonl.msexplorer.R;
+import com.melonl.msexplorer.fragment.FileListFragment;
 import com.melonl.msexplorer.model.FileUtil;
 
 import java.io.File;
@@ -24,11 +25,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
     private Context mContext;
     private List<File> mList;
     private itemListener mListener;
+    private FileListFragment mCurrentFragment;
 
-    public FileListAdapter(Context context, List<File> list) {
+    public FileListAdapter(Context context, FileListFragment fragment, List<File> list) {
         mContext = context;
         mList = list;
-
+        mCurrentFragment = fragment;
     }
 
     @Override
@@ -59,6 +61,21 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
             holder.subtv.setText(FileUtil.getSizeStr(f));
         }
 
+        if (position == 0 && mCurrentFragment.getCurrentPath().length() > f.getAbsolutePath().length()) {
+            holder.tv.setText("..");
+            holder.subtv.setText("Upper");
+        }
+
+    }
+
+    public File getItemFromPos(int pos) {
+        return mList.get(pos);
+    }
+
+    public void setFileList(List<File> newList) {
+        mList.clear();
+        mList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @Override
