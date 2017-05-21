@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
 import com.melonl.msexplorer.model.FileUtil;
@@ -38,8 +39,21 @@ public class FileListFragment extends BaseFragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(new FileListAdapter(getActivity(), FileUtil.getFileList(FileUtil.getInnerSdcardPath())));
+        mAdapter = new FileListAdapter(getActivity(), FileUtil.getFileList(FileUtil.getInnerSdcardPath()));
+        mAdapter.setItemListener(new FileListAdapter.itemListener() {
 
+            @Override
+            public void onItemClick(View v, int pos) {
+                ((MainActivity) getActivity()).toast(pos + "");
+            }
+
+            @Override
+            public boolean onItemLongClick(View v, int pos) {
+
+                return false;
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 

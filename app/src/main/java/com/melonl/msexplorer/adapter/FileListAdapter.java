@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.model.FileUtil;
 
@@ -23,6 +23,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
 
     private Context mContext;
     private List<File> mList;
+    private itemListener mListener;
 
     public FileListAdapter(Context context, List<File> list) {
         mContext = context;
@@ -34,13 +35,15 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
     public FileListAdapter.viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(mContext).inflate(R.layout.item_file_list, parent, false);
-        View layout = v.findViewById(R.id.item_filelist_layout);
-        layout.setOnClickListener(this);
-        layout.setOnLongClickListener(this);
+
         viewHolder holder = new viewHolder(v);
         holder.tv = (TextView) v.findViewById(R.id.item_filelist_tv);
         holder.subtv = (TextView) v.findViewById(R.id.item_filelist_subtv);
         holder.iv = (ImageView) v.findViewById(R.id.item_filelist_iv);
+        holder.layout = (LinearLayout) v.findViewById(R.id.item_filelist_layout);
+
+        holder.layout.setOnClickListener(this);
+        holder.layout.setOnLongClickListener(this);
 
         return holder;
     }
@@ -48,6 +51,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
     @Override
     public void onBindViewHolder(FileListAdapter.viewHolder holder, int position) {
         File f = mList.get(position);
+        holder.layout.setTag(R.string.mark, position);
         holder.tv.setText(f.getName());
         if (f.isDirectory()) {
             holder.subtv.setText("Folder");
@@ -62,19 +66,38 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         return mList.size();
     }
 
+    public void setItemListener(itemListener listener) {
+        mListener = listener;
+    }
+
     @Override
     public void onClick(View v) {
-        ((MainActivity) mContext).toast("you tap!");
+        int pos = (int) v.getTag(R.string.mark);
+        if (mListener != null) {
+            mListener.onItemClick(v, pos);
+        }
+
     }
 
     @Override
     public boolean onLongClick(View v) {
-        return true;
+        int pos = (int) v.getTag(R.string.mark);
+        boolean b = false;
+        if (mListener != null) {
+            b = mListener.onItemLongClick(v, pos);
+        }
+        return b;
     }
 
+    public interface itemListener {
+        void onItemClick(View v, int pos);
+
+        boolean onItemLongClick(View v, int pos);
+    }
 
     class viewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout layout;
         TextView tv;
         TextView subtv;
         ImageView iv;
