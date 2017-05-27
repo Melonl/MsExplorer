@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,8 @@ import com.melonl.msexplorer.fragment.BaseFragment;
 import com.melonl.msexplorer.fragment.FileListFragment;
 import com.melonl.msexplorer.fragment.MainPageFragment;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     private FloatingToolbar mFloatingbar;
 
     private PagerAdapter mPagerAdapter;
+
+    private boolean isCreatingFile; //used to mark creating file or folder
 
 
     @Override
@@ -97,6 +102,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mViewPager.setAdapter(mPagerAdapter);
         //mViewPager.setOffscreenPageLimit(4);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mViewPager.addOnPageChangeListener(this);
         mTabLayout.setupWithViewPager(mViewPager);
 
         mFloatingbar.attachFab(mFab);
@@ -112,16 +118,66 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                             @Override
                             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                                 switch(position){
-                                    case 0:
-
+                                    case 0://new file case
+                                        isCreatingFile = true;
+                                        break;
+                                    case 1://new folder case
+                                        isCreatingFile = false;
                                         break;
                                 }
+                                creatingFileOrFolder();
                             }
                         })
+
                         .show();
             }
         });
 
+    }
+
+    private void creatingFileOrFolder() {
+        final String creatingType;
+        if (isCreatingFile) {
+            creatingType = "File";
+        } else {
+            creatingType = "Folder";
+        }
+        new MaterialDialog.Builder(this)
+                .title("Create new " + creatingType)
+                .input("New" + creatingType, null, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        if (TextUtils.isEmpty(input)) {
+                            return;
+                        }
+                        FileListFragment f = (FileListFragment) mCurrentfragment;
+                        String currentPath = f.getCurrentPath();
+                        if (!new File(currentPath).canWrite()) {
+                            Snackbar("Permission denied");
+                            return;
+                        }
+                        File newFile = new File(currentPath + File.separator + input);
+                        boolean createSucc;
+                        if (isCreatingFile) {
+                            try {
+                                createSucc = newFile.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                createSucc = false;
+                            }
+                        } else {
+                            createSucc = newFile.mkdir();
+                        }
+                        if (createSucc) {
+                            Snackbar("Created successfully");
+                            f.refreshList();
+                        } else {
+                            Snackbar("Failed to create!");
+                        }
+                        return;
+                    }
+                })
+                .show();
     }
 
     public void checkPermission(){
@@ -166,7 +222,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     {
         Snackbar sb = Snackbar.make(mCoordinator, text, Snackbar.LENGTH_SHORT);
         //sb.getView().setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
-        sb.setAction("OK", null);
+        sb.setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //...
+            }
+        });
         sb.show();
     }
 
@@ -212,6 +273,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     @Override
     public void onPageSelected(int position) {
+        //Snackbar(position + "");
         mCurrentfragment = mPagerAdapter.getItem(position);
         if (mCurrentfragment instanceof FileListFragment) {
             RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();

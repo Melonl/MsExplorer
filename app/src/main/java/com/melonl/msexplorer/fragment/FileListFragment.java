@@ -58,8 +58,7 @@ public class FileListFragment extends BaseFragment {
                 }
                 if (mClickedFile.isDirectory()) {
                     mCurrentPath = mClickedFile.getAbsolutePath();
-                    List<File> list = FileUtil.getFileList(mCurrentPath);
-                    mAdapter.setFileList(addUpperItem(FileUtil.getFileList(mCurrentPath)));
+                    refreshList();
                 } else {
 
                 }
@@ -80,10 +79,10 @@ public class FileListFragment extends BaseFragment {
     }
 
     public void refreshList() {
-        mAdapter.notifyDataSetChanged();
+        mAdapter.setFileList(addUpperItem(FileUtil.getFileList(mCurrentPath)));
     }
 
-    public List<File> addUpperItem(List<File> oldList) {
+    private List<File> addUpperItem(List<File> oldList) {
         if (TextUtils.isEmpty(mCurrentPath)) {
             throw new RuntimeException("mCurrentPath is null!");
         }
