@@ -289,6 +289,10 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
     }
 
+    public BaseFragment getCurrentfragment() {
+        return mCurrentfragment;
+    }
+
 
     public void Snackbar(String text)
     {

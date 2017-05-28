@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
+import com.melonl.msexplorer.model.FileOperator;
 import com.melonl.msexplorer.model.FileUtil;
 
 import java.io.File;
@@ -86,7 +87,7 @@ public class FileListFragment extends BaseFragment {
 
                                         break;
                                     case 2: //delete case
-
+                                        FileOperator.getInstance().deleteFile(getActivity(), mLongClickFile);
                                         break;
                                     case 3: //rename case
 
@@ -103,6 +104,7 @@ public class FileListFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
 
     }
+
 
     public RecyclerView getRecyclerView() {
         return mRecyclerView;
