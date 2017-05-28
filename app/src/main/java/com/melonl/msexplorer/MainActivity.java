@@ -1,5 +1,8 @@
 package com.melonl.msexplorer;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
@@ -26,6 +30,7 @@ import com.melonl.msexplorer.fragment.MainPageFragment;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +99,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mToggle.syncState();
         mDrawer.addDrawerListener(mToggle);
 
+        setSubText("MainPage");
+        initToolbar();
+
         List<BaseFragment> pages = new ArrayList<>();
         pages.add(new MainPageFragment().setTitle("Main"));
         pages.add(new FileListFragment().setTitle("File"));
@@ -101,7 +109,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), pages);
         mViewPager.setAdapter(mPagerAdapter);
         //mViewPager.setOffscreenPageLimit(4);
-        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        //mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mViewPager.addOnPageChangeListener(this);
         mTabLayout.setupWithViewPager(mViewPager);
 
@@ -133,6 +141,63 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             }
         });
 
+    }
+
+    private void initToolbar() {
+        try {
+            Field f = getToolbar().getClass().getDeclaredField("mSubtitleTextView");
+            f.setAccessible(true);
+            final TextView tv = (TextView) f.get(getToolbar());
+            tv.setEllipsize(TextUtils.TruncateAt.START);
+            tv.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (mCurrentfragment instanceof FileListFragment) {
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this);
+                        builder.title("Skip to path");
+                        builder.input("type path which you want to skip", tv.getText(), new MaterialDialog.InputCallback() {
+                            public void onInput(MaterialDialog p1, CharSequence p2) {
+                                if (!TextUtils.isEmpty(p2)) {
+                                    String path = p2.toString();
+                                    File pathFile = new File(path);
+                                    if (pathFile.canRead()) {
+                                        if (path.equals(tv.getText())) {
+                                            return;
+                                        }
+                                        FileListFragment f = ((FileListFragment) mCurrentfragment);
+                                        f.setCurrentPath(path);
+
+                                        Snackbar("Had skipped to " + path);
+                                    } else {
+                                        Snackbar("Can't access path");
+                                    }
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+                }
+            });
+
+            tv.setOnLongClickListener(new View.OnLongClickListener() {
+                public boolean onLongClick(View v) {
+                    if (mCurrentfragment instanceof FileListFragment) {
+                        ClipboardManager cm = (ClipboardManager) MainActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                        cm.setPrimaryClip(ClipData.newPlainText("File path", ((TextView) v).getText()));
+                        Snackbar("Full path has been copied to clipboard");
+                    }
+
+                    return true;
+                }
+            });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void creatingFileOrFolder() {
@@ -278,7 +343,11 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         if (mCurrentfragment instanceof FileListFragment) {
             RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
             mFloatingbar.attachRecyclerView(rv);
+            setSubText(((FileListFragment) mCurrentfragment).getCurrentPath());
+        } else {
+            setSubText("MainPage");
         }
+
     }
 
     @Override

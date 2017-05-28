@@ -80,6 +80,7 @@ public class FileListFragment extends BaseFragment {
 
     public void refreshList() {
         mAdapter.setFileList(addUpperItem(FileUtil.getFileList(mCurrentPath)));
+        ((MainActivity) getActivity()).setSubText(mCurrentPath);
     }
 
     private List<File> addUpperItem(List<File> oldList) {
@@ -93,6 +94,14 @@ public class FileListFragment extends BaseFragment {
 
     public String getCurrentPath() {
         return mCurrentPath;
+    }
+
+    public void setCurrentPath(String path) {
+        if (!TextUtils.isEmpty(path)) {
+            mCurrentPath = path;
+            refreshList();
+        }
+
     }
 
 

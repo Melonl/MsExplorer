@@ -23,7 +23,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public static final int REQUEST_PERMISSION_STORAGE_CODE = 1;
 
-    Toolbar toolbar = null;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
