@@ -113,9 +113,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mViewPager.addOnPageChangeListener(this);
         mTabLayout.setupWithViewPager(mViewPager);
 
+
         mFloatingbar.attachFab(mFab);
-
-
+        mFab.setVisibility(View.INVISIBLE);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +138,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         })
 
                         .show();
+            }
+        });
+        mFab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mFloatingbar.show();
+                return false;
             }
         });
 
@@ -341,10 +348,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         //Snackbar(position + "");
         mCurrentfragment = mPagerAdapter.getItem(position);
         if (mCurrentfragment instanceof FileListFragment) {
+            mFab.show();
             RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
             mFloatingbar.attachRecyclerView(rv);
             setSubText(((FileListFragment) mCurrentfragment).getCurrentPath());
         } else {
+            mFab.hide();
             setSubText("MainPage");
         }
 

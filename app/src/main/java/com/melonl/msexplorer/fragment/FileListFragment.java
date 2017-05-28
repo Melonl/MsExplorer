@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
@@ -29,6 +30,7 @@ public class FileListFragment extends BaseFragment {
     private FileListAdapter mAdapter;
 
     private File mClickedFile;
+    private File mLongClickFile;
     private String mCurrentPath;
     @Nullable
     @Override
@@ -65,8 +67,36 @@ public class FileListFragment extends BaseFragment {
             }
 
             @Override
-            public boolean onItemLongClick(View v, int pos) {
+            public boolean onItemLongClick(View v, final int pos) {
+                if (pos == 0) {
+                    return false;
+                }
+                mLongClickFile = mAdapter.getItemFromPos(pos);
+                new MaterialDialog.Builder(getActivity())
+                        .title(mLongClickFile.getName())
+                        .items("Copy", "Cut", "Delete", "Rename", "As new page")
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                                switch (position) {
+                                    case 0: //copy case
 
+                                        break;
+                                    case 1: //cut case
+
+                                        break;
+                                    case 2: //delete case
+
+                                        break;
+                                    case 3: //rename case
+
+                                        break;
+                                    case 4: //as new page
+
+                                        break;
+                                }
+                            }
+                        }).show();
                 return false;
             }
         });
