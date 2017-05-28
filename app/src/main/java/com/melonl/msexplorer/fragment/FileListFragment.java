@@ -60,7 +60,7 @@ public class FileListFragment extends BaseFragment {
                     mCurrentPath = mClickedFile.getAbsolutePath();
                     refreshList();
                 } else {
-
+                    FileUtil.openFile(getActivity(), mClickedFile);
                 }
             }
 

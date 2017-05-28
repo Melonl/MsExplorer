@@ -3,7 +3,11 @@ package com.melonl.msexplorer.model;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
+
+import com.melonl.msexplorer.BuildConfig;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -156,12 +160,18 @@ public class FileUtil {
 
     //打开文件,自动匹配MIME类型
     public static void openFile(Context c, File file) {
-        c.startActivity(new Intent()
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .setAction(Intent.ACTION_VIEW)
-                .setDataAndType(Uri.fromFile(file), getMIMEType(file)));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+            intent.setDataAndType(contentUri, getMIMEType(file));
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), getMIMEType(file));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
-		/*
+        c.startActivity(intent);
+        /*
          Intent intent = new Intent();
 		 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		 //设置intent的Action属性
