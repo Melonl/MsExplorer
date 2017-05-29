@@ -210,9 +210,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     private void creatingFileOrFolder() {
         final String creatingType;
         if (isCreatingFile) {
-            creatingType = "File";
+            creatingType = "file";
         } else {
-            creatingType = "Folder";
+            creatingType = "folder";
         }
         new MaterialDialog.Builder(this)
                 .title("Create new " + creatingType)
@@ -246,7 +246,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         } else {
                             Snackbar("Failed to create!");
                         }
-                        return;
                     }
                 })
                 .show();
