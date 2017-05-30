@@ -1,5 +1,6 @@
 package com.melonl.msexplorer.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.melonl.msexplorer.MainActivity;
+import com.melonl.msexplorer.adapter.FileListAdapter;
 import com.melonl.msexplorer.fragment.FileListFragment;
 
 import java.io.File;
@@ -117,17 +119,29 @@ public class FileOperator {
         mSingleThreadPool.submit(new Runnable() {
             @Override
             public void run() {
-                for (File f : opFiles) {
+                for (final File f : opFiles) {
                     FileUtil.deleteFile(f);
-                }
 
+                }
                 Message msg = new Message();
                 msg.what = FLAG_DELETE_FINISH;
                 Bundle b = new Bundle();
                 b.putString(FLAG_TIP_KEY, "Delete completed");
                 msg.setData(b);
                 mHandler.sendMessage(msg);
-                mHandler.sendEmptyMessage(FLAG_REFREAH_LIST);
+
+                ((Activity) mCurrentContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Fragment frag = ((MainActivity) mCurrentContext).getCurrentfragment();
+
+                        FileListFragment fragment = (FileListFragment) frag;
+                        for (File f : opFiles) {
+                            ((FileListAdapter) fragment.getAdapter()).DeletingAnimation(f);
+                        }
+                    }
+                });
+
                 mHandler.sendEmptyMessage(FLAG_CLEAR_CONTEXT);
             }
         });

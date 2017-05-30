@@ -72,10 +72,24 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         return mList.get(pos);
     }
 
+    public int getItemPosition(File file) {
+        return mList.indexOf(file);
+    }
+
     public void setFileList(List<File> newList) {
         mList.clear();
         mList.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public void DeletingAnimation(File f) {
+        int pos = getItemPosition(f);
+        mList.remove(f);
+        notifyItemRemoved(pos);
+
+        if (pos != mList.size()) {
+            notifyItemRangeChanged(pos, mList.size() - pos);
+        }
     }
 
     @Override

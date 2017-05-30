@@ -110,6 +110,10 @@ public class FileListFragment extends BaseFragment {
         return mRecyclerView;
     }
 
+    public RecyclerView.Adapter getAdapter() {
+        return mAdapter;
+    }
+
     public void refreshList() {
         mAdapter.setFileList(addUpperItem(FileUtil.getFileList(mCurrentPath)));
         ((MainActivity) getActivity()).setSubText(mCurrentPath);
