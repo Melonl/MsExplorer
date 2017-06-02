@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
+import com.melonl.msexplorer.adapter.FileListAdapter;
 import com.melonl.msexplorer.adapter.PagerAdapter;
 import com.melonl.msexplorer.fragment.BaseFragment;
 import com.melonl.msexplorer.fragment.FileListFragment;
@@ -242,7 +243,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         }
                         if (createSucc) {
                             Snackbar("Created successfully");
-                            f.refreshList();
+                            ((FileListAdapter) f.getAdapter()).addingAnimation(newFile);
                         } else {
                             Snackbar("Failed to create!");
                         }

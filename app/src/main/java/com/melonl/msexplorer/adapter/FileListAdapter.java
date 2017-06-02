@@ -14,6 +14,7 @@ import com.melonl.msexplorer.fragment.FileListFragment;
 import com.melonl.msexplorer.model.FileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,10 +83,23 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         notifyDataSetChanged();
     }
 
-    public void DeletingAnimation(File f) {
+    public void deletingAnimation(File f) {
         int pos = getItemPosition(f);
         mList.remove(f);
         notifyItemRemoved(pos);
+
+        if (pos != mList.size()) {
+            notifyItemRangeChanged(pos, mList.size() - pos);
+        }
+    }
+
+    public void addingAnimation(File f) {
+        mList.add(f);
+        FileUtil.customSort((ArrayList<File>) mList);
+        int pos = mList.indexOf(f);
+        mList.remove(f);
+        mList.add(pos, f);
+        notifyItemInserted(pos);
 
         if (pos != mList.size()) {
             notifyItemRangeChanged(pos, mList.size() - pos);

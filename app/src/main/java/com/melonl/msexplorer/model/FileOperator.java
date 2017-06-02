@@ -79,18 +79,6 @@ public class FileOperator {
         f.refreshList();
     }
 
-    private void runOnUiThread(final RunOnUiCode code) {
-        if (code == null) {
-            throw new RuntimeException("runOnUiCode is null !");
-        }
-        ((Activity) mCurrentContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                code.run();
-            }
-        });
-    }
-
     public void deleteFile(Context context, File... opFiles) {
         mCurrentContext = context;
         if (opFiles == null || opFiles.length == 0) {
@@ -141,13 +129,13 @@ public class FileOperator {
                 b.putString(FLAG_TIP_KEY, "Delete completed");
                 msg.setData(b);
                 mHandler.sendMessage(msg);
-                runOnUiThread(new RunOnUiCode() {
+                ((Activity) mCurrentContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Fragment frag = ((MainActivity) mCurrentContext).getCurrentfragment();
                         FileListFragment fragment = (FileListFragment) frag;
                         for (File f : opFiles) {
-                            ((FileListAdapter) fragment.getAdapter()).DeletingAnimation(f);
+                            ((FileListAdapter) fragment.getAdapter()).deletingAnimation(f);
                         }
                     }
                 });
@@ -156,7 +144,5 @@ public class FileOperator {
         });
     }
 
-    public interface RunOnUiCode {
-        void run();
-    }
+
 }
