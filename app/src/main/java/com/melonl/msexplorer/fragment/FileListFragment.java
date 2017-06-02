@@ -119,7 +119,7 @@ public class FileListFragment extends BaseFragment {
         ((MainActivity) getActivity()).setSubText(mCurrentPath);
     }
 
-    private List<File> addUpperItem(List<File> oldList) {
+    public List<File> addUpperItem(List<File> oldList) {
         if (TextUtils.isEmpty(mCurrentPath)) {
             throw new RuntimeException("mCurrentPath is null!");
         }

@@ -115,13 +115,13 @@ public class FileOperator {
                 .content("Deleting " + name)
                 .progressIndeterminateStyle(false)
                 .build();
+
         mDeletingDialog.show();
         mSingleThreadPool.submit(new Runnable() {
             @Override
             public void run() {
                 for (final File f : opFiles) {
                     FileUtil.deleteFile(f);
-
                 }
                 Message msg = new Message();
                 msg.what = FLAG_DELETE_FINISH;

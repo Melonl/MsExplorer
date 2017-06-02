@@ -94,8 +94,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
     }
 
     public void addingAnimation(File f) {
+        mList.remove(0);
         mList.add(f);
         FileUtil.customSort((ArrayList<File>) mList);
+        mCurrentFragment.addUpperItem(mList);
         int pos = mList.indexOf(f);
         mList.remove(f);
         mList.add(pos, f);
