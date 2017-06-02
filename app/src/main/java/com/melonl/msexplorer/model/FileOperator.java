@@ -112,10 +112,11 @@ public class FileOperator {
     private void deleteFileLogic(final Context context, final File[] opFiles, String name) {
         mDeletingDialog = new MaterialDialog.Builder(context)
                 .title("Delete")
-                .content("Deleting " + name)
-                .progressIndeterminateStyle(false)
+                .content("Deleting " + name + "...")
+                .progress(true, 100)
+                .canceledOnTouchOutside(false)
+                .cancelable(false)
                 .build();
-
         mDeletingDialog.show();
         mSingleThreadPool.submit(new Runnable() {
             @Override
