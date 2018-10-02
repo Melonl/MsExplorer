@@ -1,5 +1,6 @@
 package com.melonl.msexplorer;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -14,7 +15,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +28,7 @@ import com.melonl.msexplorer.adapter.PagerAdapter;
 import com.melonl.msexplorer.fragment.BaseFragment;
 import com.melonl.msexplorer.fragment.FileListFragment;
 import com.melonl.msexplorer.fragment.MainPageFragment;
+import com.melonl.msexplorer.views.BottomBar;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     private ActionBarDrawerToggle mToggle;
     private FloatingActionButton mFab;
     private FloatingToolbar mFloatingbar;
+    private BottomBar mBottomBar;
 
     private PagerAdapter mPagerAdapter;
 
@@ -91,9 +93,10 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
         mFloatingbar = (FloatingToolbar) findViewById(R.id.floatingToolbar);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-
+        //mBottomBar = (BottomBar)findViewById(R.id.bottomBar);
     }
 
+    @SuppressLint("RestrictedApi")
     private void setUpViews() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -105,7 +108,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         List<BaseFragment> pages = new ArrayList<>();
         pages.add(new MainPageFragment().setTitle("Main"));
-        pages.add(new FileListFragment().setTitle("File"));
+        pages.add(new FileListFragment().setTitle("Files"));
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), pages);
         mViewPager.setAdapter(mPagerAdapter);
@@ -116,6 +119,67 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
 
         mFloatingbar.attachFab(mFab);
+        //mFloatingbar.attachRecyclerView(((FileListFragment)getCurrentfragment()).getRecyclerView());
+        mFloatingbar.addMorphListener(new FloatingToolbar.MorphListener() {
+            @Override
+            public void onMorphEnd() {
+                //toast("onMorphEnd");
+                if (mCurrentfragment instanceof FileListFragment) {
+                    boolean b = ((FileListFragment) mCurrentfragment).isSelecting();
+                    if (!b) {
+                        mFloatingbar.hide();
+                    }
+                } else if (mCurrentfragment instanceof MainPageFragment) {
+                    hideFloatingToolbar();
+                }
+            }
+
+            @Override
+            public void onMorphStart() {
+                //toast("onMorphStart");
+            }
+
+            @Override
+            public void onUnmorphStart() {
+                //toast("onUnMorphStart");
+            }
+
+            @Override
+            public void onUnmorphEnd() {
+                //toast("onUnMorphEnd");
+                if (!(mCurrentfragment instanceof FileListFragment)) {
+                    mFab.hide();
+                }
+            }
+        });
+
+        mFloatingbar.setClickListener(new FloatingToolbar.ItemClickListener() {
+            @Override
+            public void onItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.toolbar_copy:
+
+
+                        break;
+
+                    case R.id.toolbar_delete:
+
+                        break;
+
+
+                    case R.id.toolbar_close:
+                        ((FileListFragment) mCurrentfragment).exitSeclectingMode();
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onItemLongClick(MenuItem item) {
+
+            }
+        });
+
         mFab.setVisibility(View.INVISIBLE);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +190,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                                switch(position){
+                                switch (position) {
                                     case 0://new file case
                                         isCreatingFile = true;
                                         break;
@@ -141,13 +205,16 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                         .show();
             }
         });
+
         mFab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mFloatingbar.show();
+
+
                 return false;
             }
         });
+
 
     }
 
@@ -162,7 +229,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                     if (mCurrentfragment instanceof FileListFragment) {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this);
                         builder.title("Skip to path");
-                        builder.input("type path which you want to skip", tv.getText(), new MaterialDialog.InputCallback() {
+                        builder.input("Type path which you want to skip", tv.getText(), new MaterialDialog.InputCallback() {
                             public void onInput(MaterialDialog p1, CharSequence p2) {
                                 if (!TextUtils.isEmpty(p2)) {
                                     String path = p2.toString();
@@ -252,37 +319,29 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 .show();
     }
 
-    public void checkPermission(){
-        if (checkUpPermission() == 0)
-        {
+    public void checkPermission() {
+        if (checkUpPermission() == 0) {
             findViews();
             setUpViews();
-        }
-        else
-        {
+        } else {
             requestStoragePermission();
         }
 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == REQUEST_PERMISSION_STORAGE_CODE)
-        {
+        if (requestCode == REQUEST_PERMISSION_STORAGE_CODE) {
             int grantResult = grantResults[0];
 
             boolean granted = grantResult == PackageManager.PERMISSION_GRANTED;
 
-            if (granted)
-            {
+            if (granted) {
                 findViews();
                 setUpViews();
-            }
-            else
-            {
+            } else {
                 finish();
             }
 
@@ -294,8 +353,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
 
-    public void Snackbar(String text)
-    {
+    public void Snackbar(String text) {
         Snackbar sb = Snackbar.make(mCoordinator, text, Snackbar.LENGTH_SHORT);
         //sb.getView().setBackgroundColor(getResources().getColor(R.color.black_semi_transparent));
         sb.setAction("OK", new View.OnClickListener() {
@@ -330,13 +388,11 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch(id){
+        switch (id) {
             case R.id.action_exit:
                 finish();
                 break;
-            case R.id.action_about:
 
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -350,21 +406,38 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     @Override
     public void onPageSelected(int position) {
         //Snackbar(position + "");
+        BaseFragment lastFragment = mCurrentfragment;
         mCurrentfragment = mPagerAdapter.getItem(position);
+        if (lastFragment instanceof FileListFragment) {
+            ((FileListFragment) lastFragment).exitSeclectingMode();
+        }
         if (mCurrentfragment instanceof FileListFragment) {
             mFab.show();
-            RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
-            mFloatingbar.attachRecyclerView(rv);
+            //RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
+            //rv.scheduleLayoutAnimation();
+            //mFloatingbar.attachRecyclerView(rv);
             setSubText(((FileListFragment) mCurrentfragment).getCurrentPath());
         } else {
-            mFab.hide();
             setSubText("MainPage");
+            if (mFloatingbar.isShown()) {
+                mFloatingbar.hide();
+            }
+            mFab.hide();
+
         }
 
     }
 
+    public void showFloatingToolbar() {
+        mFloatingbar.show();
+    }
+
+    public void hideFloatingToolbar() {
+        mFloatingbar.hide();
+    }
+
     @Override
     public void onPageScrollStateChanged(int state) {
-        mFloatingbar.detachRecyclerView();
+        //mFloatingbar.detachRecyclerView();
     }
 }

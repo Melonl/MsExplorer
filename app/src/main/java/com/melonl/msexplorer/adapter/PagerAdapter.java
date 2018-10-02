@@ -15,7 +15,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private List<BaseFragment> mFragments;
 
-    public PagerAdapter(FragmentManager fm,List<BaseFragment> frags){
+    public PagerAdapter(FragmentManager fm, List<BaseFragment> frags) {
         super(fm);
         this.mFragments = frags;
 

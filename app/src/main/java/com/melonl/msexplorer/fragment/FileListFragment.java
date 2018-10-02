@@ -2,6 +2,7 @@ package com.melonl.msexplorer.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,12 +10,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
-import com.melonl.msexplorer.model.FileOperator;
 import com.melonl.msexplorer.model.FileUtil;
 
 import java.io.File;
@@ -29,10 +30,15 @@ public class FileListFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private FileListAdapter mAdapter;
+    private BottomSheetDialog mSheet;
 
     private File mClickedFile;
     private File mLongClickFile;
     private String mCurrentPath;
+
+
+    private boolean isSelecting = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,6 +52,9 @@ public class FileListFragment extends BaseFragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.file_list_rv);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(getActivity(), resId);
+        mRecyclerView.setLayoutAnimation(animation);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mCurrentPath = FileUtil.getInnerSdcardPath();
         mAdapter = new FileListAdapter(getActivity(), this, addUpperItem(FileUtil.getFileList(mCurrentPath)));
@@ -53,10 +62,25 @@ public class FileListFragment extends BaseFragment {
 
             @Override
             public void onItemClick(View v, int pos) {
-                //((MainActivity) getActivity()).toast(pos + "");
                 mClickedFile = mAdapter.getItemFromPos(pos);
+
+                if (isSelecting) {
+                    if (mAdapter.isSelectedFileContains(mClickedFile)) {
+                        mAdapter.removeSelectedFile(mClickedFile);
+                        if (mAdapter.getSelectedFileCount() == 0) {
+                            exitSeclectingMode();
+                        }
+                    } else {
+                        mAdapter.addSelectedFile(mClickedFile);
+                    }
+                    mAdapter.notifyDataSetChanged();
+
+                    return;
+                }
+
+
                 if (!mClickedFile.canRead()) {
-                    ((MainActivity) getActivity()).Snackbar("Permission denied");
+                    getMainActivity().Snackbar("Permission denied");
                     return;
                 }
                 if (mClickedFile.isDirectory()) {
@@ -69,10 +93,18 @@ public class FileListFragment extends BaseFragment {
 
             @Override
             public boolean onItemLongClick(View v, final int pos) {
-                if (pos == 0) {
-                    return false;
+                if (pos == 0 || isSelecting) {
+                    return true;
                 }
                 mLongClickFile = mAdapter.getItemFromPos(pos);
+                getMainActivity().showFloatingToolbar();
+
+                isSelecting = true;
+                mAdapter.addSelectedFile(mLongClickFile);
+                mAdapter.notifyDataSetChanged();
+
+
+                /*
                 new MaterialDialog.Builder(getActivity())
                         .title(mLongClickFile.getName())
                         .items("Copy", "Cut", "Delete", "Rename", "As new page")
@@ -98,10 +130,14 @@ public class FileListFragment extends BaseFragment {
                                 }
                             }
                         }).show();
-                return false;
+
+                    */
+                return true;
             }
         });
+
         mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),DividerItemDecoration.VERTICAL));
 
     }
 
@@ -116,7 +152,7 @@ public class FileListFragment extends BaseFragment {
 
     public void refreshList() {
         mAdapter.setFileList(addUpperItem(FileUtil.getFileList(mCurrentPath)));
-        ((MainActivity) getActivity()).setSubText(mCurrentPath);
+        getMainActivity().setSubText(mCurrentPath);
     }
 
     public List<File> addUpperItem(List<File> oldList) {
@@ -138,6 +174,40 @@ public class FileListFragment extends BaseFragment {
             refreshList();
         }
 
+    }
+
+    public void showSheets() {
+        if (mSheet == null) {
+            View view = View.inflate(getActivity(), R.layout.sheet_dialog_file_option, null);
+            mSheet = new BottomSheetDialog(getActivity());
+            mSheet.setContentView(view);
+            mSheet.show();
+        } else {
+            mSheet.show();
+        }
+    }
+
+    public void closeSheets() {
+        mSheet.cancel();
+    }
+
+    private MainActivity getMainActivity() {
+        return ((MainActivity) getActivity());
+    }
+
+    public void setIsSelecting(boolean b) {
+        isSelecting = b;
+    }
+
+    public boolean isSelecting() {
+        return isSelecting;
+    }
+
+    public void exitSeclectingMode() {
+        mAdapter.clearSelectedFile();
+        mAdapter.notifyDataSetChanged();
+        getMainActivity().hideFloatingToolbar();
+        isSelecting = false;
     }
 
 

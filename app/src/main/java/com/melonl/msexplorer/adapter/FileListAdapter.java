@@ -1,5 +1,6 @@
 package com.melonl.msexplorer.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
 
     private Context mContext;
     private List<File> mList;
+    private List<File> mSecletedFiles = new ArrayList<File>();
     private itemListener mListener;
     private FileListFragment mCurrentFragment;
 
@@ -51,21 +53,29 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         return holder;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(FileListAdapter.viewHolder holder, int position) {
         File f = mList.get(position);
         holder.layout.setTag(R.string.mark, position);
         holder.tv.setText(f.getName());
+
+        if (mSecletedFiles.contains(f)) {
+            holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+        } else {
+            holder.layout.setBackground(mContext.getDrawable(R.drawable.recycler_item_selector));
+        }
+        if (position == 0 && mCurrentFragment.getCurrentPath().length() > f.getAbsolutePath().length()) {
+            holder.tv.setText("..");
+            holder.subtv.setText("Upper");
+            return;
+        }
         if (f.isDirectory()) {
-            holder.subtv.setText("Folder");
+            holder.subtv.setText(FileUtil.getFileContain(f) + " Files");
         } else {
             holder.subtv.setText(FileUtil.getSizeStr(f));
         }
 
-        if (position == 0 && mCurrentFragment.getCurrentPath().length() > f.getAbsolutePath().length()) {
-            holder.tv.setText("..");
-            holder.subtv.setText("Upper");
-        }
 
     }
 
@@ -79,8 +89,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
 
     public void setFileList(List<File> newList) {
         mList.clear();
+
         mList.addAll(newList);
         notifyDataSetChanged();
+        /*
+        for(int i=0;i<mList.size();i++){
+            notifyItemInserted(i);
+        }
+        */
     }
 
     public void deletingAnimation(File f) {
@@ -108,10 +124,37 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.viewHo
         }
     }
 
+
+    public void refleshData() {
+
+    }
+
+    public void addSelectedFile(File f) {
+        mSecletedFiles.add(f);
+    }
+
+    public void removeSelectedFile(File f) {
+        mSecletedFiles.remove(f);
+    }
+
+    public void clearSelectedFile() {
+        mSecletedFiles.clear();
+    }
+
+    public boolean isSelectedFileContains(File f) {
+        return mSecletedFiles.contains(f);
+    }
+
+    public int getSelectedFileCount() {
+        return mSecletedFiles.size();
+    }
+
+
     @Override
     public int getItemCount() {
         return mList.size();
     }
+
 
     public void setItemListener(itemListener listener) {
         mListener = listener;

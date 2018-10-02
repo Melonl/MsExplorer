@@ -12,7 +12,7 @@ public class BaseFragment extends Fragment {
 
     public String getTitle() {
 
-        if(title == null){
+        if (title == null) {
             throw new RuntimeException("Fragment's title is null !");
         }
 
@@ -23,8 +23,6 @@ public class BaseFragment extends Fragment {
         this.title = title;
         return this;
     }
-
-
 
 
 }

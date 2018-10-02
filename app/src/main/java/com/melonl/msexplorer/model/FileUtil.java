@@ -592,6 +592,13 @@ public class FileUtil {
 
     }
 
+    public static long getFileContain(File f) {
+        if (!f.isDirectory()) {
+            return -1;
+        }
+        return f.list().length;
+    }
+
     //根据文件类型排序(文件夹或者文件)
     public static class SortByType implements Comparator {
         @Override

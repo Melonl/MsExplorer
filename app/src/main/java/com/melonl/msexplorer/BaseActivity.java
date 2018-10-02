@@ -35,7 +35,7 @@ public class BaseActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
-            if(useBackBtn()){
+            if (useBackBtn()) {
                 getActionBar().setDisplayHomeAsUpEnabled(true);
             }
             if (useTinted()) {
@@ -47,7 +47,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public int getLayoutId(){
+    public int getLayoutId() {
 
         //pls override this method to set content view.
         return 0;
@@ -58,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
         return false;
     }
 
-    public void setSubText(String text){
+    public void setSubText(String text) {
         getToolbar().setSubtitle(text);
     }
 
@@ -103,26 +103,20 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public int checkUpPermission()
-    {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-        {
+    public int checkUpPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return 0;
         }
 
-        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) || !(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED))
-        {
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) || !(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
             return -1;
-        }
-        else
-        {
+        } else {
             return 0;
         }
 
     }
 
-    public void requestStoragePermission()
-    {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE_CODE);
+    public void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE_CODE);
     }
 }

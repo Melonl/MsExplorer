@@ -12,59 +12,118 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/White">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar" />
+                <include layout="@layout/toolbar" />
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/main_tablayout"
-            style="@style/MyTabLayoutStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable" />
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/main_tablayout"
+                    style="@style/MyTabLayoutStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabMode="scrollable" />
 
-    </android.support.design.widget.AppBarLayout>
+            </android.support.design.widget.AppBarLayout>
 
 
             <android.support.v4.view.ViewPager
-            android:id="@+id/main_view_pagwer"
+                android:id="@+id/main_view_pagwer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <!--
+
+        <com.melonl.msexplorer.views.BottomBar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bottomBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimary"
+            android:visibility="invisible">
 
-    </LinearLayout>
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/item_copy"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_content_copy_white_36dp" />
 
-    <com.github.rubensousa.floatingtoolbar.FloatingToolbar
-        android:id="@+id/floatingToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        app:floatingHandleFabClick="false"
-        app:floatingItemBackground="@color/colorPrimary"
-        app:floatingMenu="@menu/menu_toolbar" />
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/item_cut"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_content_cut_white_36dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_collapseMode="pin"
-        app:srcCompat="@mipmap/ic_add_white_48dp" />
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/item_delete"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_delete_white_36dp" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/item_info"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_delete" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/item_more"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_close_white_36dp"
+                />
+
+        </com.melonl.msexplorer.views.BottomBar>
+
+        -->
 
 
-</android.support.design.widget.CoordinatorLayout>
+        <com.github.rubensousa.floatingtoolbar.FloatingToolbar
+            android:id="@+id/floatingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:floatingHandleFabClick="false"
+            app:floatingAutoHide="false"
+            app:floatingItemBackground="@color/colorPrimary"
+            app:floatingMenu="@menu/menu_toolbar" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:layout_collapseMode="pin"
+            app:srcCompat="@mipmap/ic_add_white_48dp" />
+
+
+    </android.support.design.widget.CoordinatorLayout>
 
 
     <android.support.design.widget.NavigationView
@@ -76,5 +135,6 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_nav"
         app:menu="@menu/menu_drawer" />
+
 
 </android.support.v4.widget.DrawerLayout>
