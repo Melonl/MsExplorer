@@ -153,33 +153,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             }
         });
 
-        mFloatingbar.setClickListener(new FloatingToolbar.ItemClickListener() {
-            @Override
-            public void onItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.toolbar_copy:
-
-
-                        break;
-
-                    case R.id.toolbar_delete:
-
-                        break;
-
-
-                    case R.id.toolbar_close:
-                        ((FileListFragment) mCurrentfragment).exitSeclectingMode();
-                        break;
-
-                }
-            }
-
-            @Override
-            public void onItemLongClick(MenuItem item) {
-
-            }
-        });
-
         mFab.setVisibility(View.INVISIBLE);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,10 +386,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
         if (mCurrentfragment instanceof FileListFragment) {
             mFab.show();
-            //RecyclerView rv = ((FileListFragment) mCurrentfragment).getRecyclerView();
+            FileListFragment f = ((FileListFragment) mCurrentfragment);
             //rv.scheduleLayoutAnimation();
             //mFloatingbar.attachRecyclerView(rv);
-            setSubText(((FileListFragment) mCurrentfragment).getCurrentPath());
+            setSubText(f.getCurrentPath());
+            mFloatingbar.setClickListener(f.getListener());
+            //mFloatingbar.setClickListener();
         } else {
             setSubText("MainPage");
             if (mFloatingbar.isShown()) {

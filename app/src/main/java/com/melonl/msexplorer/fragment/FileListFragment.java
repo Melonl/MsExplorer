@@ -8,11 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 
+import com.github.rubensousa.floatingtoolbar.FloatingToolbar;
 import com.melonl.msexplorer.MainActivity;
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.FileListAdapter;
@@ -174,6 +176,35 @@ public class FileListFragment extends BaseFragment {
             refreshList();
         }
 
+    }
+
+    public FloatingToolbar.ItemClickListener getListener() {
+
+        return new FloatingToolbar.ItemClickListener() {
+            @Override
+            public void onItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.toolbar_copy:
+
+                        break;
+
+                    case R.id.toolbar_delete:
+
+                        break;
+
+
+                    case R.id.toolbar_close:
+                        exitSeclectingMode();
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onItemLongClick(MenuItem item) {
+
+            }
+        };
     }
 
     public void showSheets() {

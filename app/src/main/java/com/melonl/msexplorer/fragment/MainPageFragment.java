@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.melonl.msexplorer.R;
 import com.melonl.msexplorer.adapter.MemoryListAdapter;
+import com.melonl.msexplorer.model.StorageSizeUtil;
 
 /**
  * Created by root on 17-5-6.
@@ -22,6 +23,11 @@ public class MainPageFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private ProgressBar mProgress;
     private TextView mTextView;
+
+
+    private int colorGreen;
+    private int colorOrange;
+    private int colorRed;
 
 
     private MemoryListAdapter mAdapter;
@@ -40,14 +46,43 @@ public class MainPageFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        colorGreen = getResources().getColor(R.color.blue);
+        colorOrange = getResources().getColor(R.color.orange);
+        colorRed = getResources().getColor(R.color.red);
+
+
         mProgress = (ProgressBar) view.findViewById(R.id.progressBar1);
         mTextView = (TextView) view.findViewById(R.id.tv_memory_usage);
 
-
+        calcMemory();
     }
 
     private void calcMemory() {
+        double total = StorageSizeUtil.getTotalExternalMemorySize();
+        double remain = StorageSizeUtil.getAvailableExternalMemorySize();
+        double percent = (total - remain) / total * 100;
 
+        mTextView.setText(String.format("%.2f", percent) + "% used");
+        mProgress.setProgress((int) percent);
 
+        /*
+        int color;
+        if(percent>=90){
+            color = colorRed;
+        }
+        else if(percent >= 70 && percent <90){
+            color = colorOrange;
+        }
+        else{
+            color = colorGreen;
+        }
+        */
+
+        /*
+        ClipDrawable drawable = new ClipDrawable(new ColorDrawable(color), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+        mProgress.setProgressDrawable(drawable);
+        drawable.setLevel((int)percent * 100);
+        mProgress.setProgressDrawable(drawable);
+        */
     }
 }
