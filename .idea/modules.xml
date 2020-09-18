@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MsExplorer.iml" filepath="$PROJECT_DIR$/MsExplorer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MsExplorer.iml" filepath="$PROJECT_DIR$/.idea/MsExplorer.iml" group="MsExplorer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="MsExplorer/app" />
     </modules>
   </component>
 </project>
